@@ -1,0 +1,81 @@
+# Base training configuration for Lyra-1
+# This config defines default hyperparameters for training runs
+
+model:
+  name: "lyra-1-base"
+  architecture: "transformer"
+  hidden_size: 4096
+  num_hidden_layers: 32
+  num_attention_heads: 32
+  intermediate_size: 11008
+  max_position_embeddings: 4096
+  vocab_size: 32000
+  dropout: 0.0
+  attention_dropout: 0.0
+
+training:
+  seed: 42
+  num_train_epochs: 3
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 8
+  learning_rate: 2.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.03
+  lr_scheduler_type: "cosine"
+  max_grad_norm: 1.0
+  bf16: true
+  fp16: false
+  tf32: true
+  dataloader_num_workers: 4
+  dataloader_pin_memory: true
+  gradient_checkpointing: true
+  optim: "adamw_torch_fused"
+  adam_beta1: 0.9
+  adam_beta2: 0.999
+  adam_epsilon: 1.0e-8
+
+data:
+  dataset_name: null
+  dataset_path: null
+  train_split: "train"
+  eval_split: "validation"
+  max_seq_length: 2048
+  preprocessing_num_workers: 16
+  overwrite_cache: false
+
+logging:
+  logging_steps: 10
+  eval_steps: 500
+  save_steps: 500
+  save_total_limit: 3
+  report_to: "wandb"
+  run_name: null
+  output_dir: "./outputs"
+
+fsdp:
+  enabled: false
+  fsdp_config:
+    fsdp_auto_wrap_policy: "TRANSFORMER_BASED_WRAP"
+    fsdp_backward_prefetch: "BACKWARD_PRE"
+    fsdp_forward_prefetch: false
+    fsdp_offload_params: false
+    fsdp_sharding_strategy: 1
+    fsdp_state_dict_type: "FULL_STATE_DICT"
+    fsdp_transformer_layer_cls_to_wrap: "LlamaDecoderLayer"
+
+lora:
+  enabled: false
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules:
+    - "q_proj"
+    - "v_proj"
+    - "k_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+  bias: "none"
+  task_type: "CAUSAL_LM"
