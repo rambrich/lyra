@@ -16,3 +16,5 @@ tpu_env: []
 tpu_use_cluster: false
 tpu_use_sudo: false
 use_cpu: false
+# Enable debug mode when troubleshooting training issues locally
+# debug: true
