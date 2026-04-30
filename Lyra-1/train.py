@@ -96,27 +96,10 @@ def main() -> None:
 
     setup_logging(accelerator)
 
-    seed = config.get("seed", 42)
+    # Default seed changed to 0 for my own experiments so results are easier to track
+    seed = config.get("seed", 0)
     set_seed(seed)
     logger.info(f"Using random seed: {seed}")
 
     output_dir = Path(config.get("output_dir", "outputs"))
-    if accelerator.is_main_process:
-        output_dir.mkdir(parents=True, exist_ok=True)
-        logger.info(f"Outputs will be saved to: {output_dir}")
-
-    accelerator.wait_for_everyone()
-
-    logger.info(
-        f"Training on {accelerator.num_processes} process(es) "
-        f"with mixed precision: {accelerator.mixed_precision}"
-    )
-
-    # TODO: Initialize dataset, model, optimizer, and scheduler here
-    # then call accelerator.prepare() before the training loop.
-
-    logger.info("Training setup complete. Starting training loop...")
-
-
-if __name__ == "__main__":
-    main()
+    if accelerator.is_main_proce
